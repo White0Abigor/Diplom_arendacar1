@@ -241,6 +241,7 @@
             this.bt_Choose.TabIndex = 99;
             this.bt_Choose.Text = "Добавтить";
             this.bt_Choose.UseVisualStyleBackColor = false;
+            this.bt_Choose.Click += new System.EventHandler(this.bt_Choose_Click);
             // 
             // dgw_all_services
             // 
@@ -480,6 +481,7 @@
             this.bt_end_to.TabIndex = 83;
             this.bt_end_to.Text = "Закончить";
             this.bt_end_to.UseVisualStyleBackColor = false;
+            this.bt_end_to.Visible = false;
             this.bt_end_to.Click += new System.EventHandler(this.bt_end_to_Click);
             // 
             // bt_start_to
@@ -560,6 +562,7 @@
             this.bt_end_service.TabIndex = 83;
             this.bt_end_service.Text = "Закончить";
             this.bt_end_service.UseVisualStyleBackColor = false;
+            this.bt_end_service.Visible = false;
             this.bt_end_service.Click += new System.EventHandler(this.bt_end_service_Click);
             // 
             // bt_start_service

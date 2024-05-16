@@ -32,6 +32,8 @@ namespace Diplom_arendacar.Forms
         private void Master_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+            bt_end_service.Visible = false;
+            bt_end_to.Visible = false;
         }
 
         private void Master1_Load(object sender, EventArgs e)
@@ -124,7 +126,7 @@ namespace Diplom_arendacar.Forms
 
                     SqlConnection connect = new SqlConnection(Properties.Settings.Default.ConnectionString);
                     connect.Open();
-                    SqlCommand cmdd = new SqlCommand($"SELECT CodeService FROM [Service] WHERE UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value}", connect);
+                    SqlCommand cmdd = new SqlCommand($"SELECT TOP 1 CodeService FROM  [Service] WHERE UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value} ORDER BY CodeService DESC ", connect);
                     SqlDataReader reader = cmdd.ExecuteReader();
                     if (reader.Read())
                     {
@@ -135,16 +137,19 @@ namespace Diplom_arendacar.Forms
 
                     SqlConnection connectwpl = new SqlConnection(Properties.Settings.Default.ConnectionString);
                     connectwpl.Open();
-                    SqlCommand cmdd123 = new SqlCommand($"SELECT ServiceID FROM [Service] WHERE UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value}", connect);
+                    SqlCommand cmdd123 = new SqlCommand($"SELECT TOP 1 ServiceID FROM [Service] WHERE UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value} ORDER BY ServiceID DESC", connectwpl);
                     SqlDataReader reader123 = cmdd123.ExecuteReader();
-                    if (reader.Read())
+                    if (reader123.Read())
                     {
                         Properties.Settings.Default.service_id = reader123.GetInt32(0);
                         Properties.Settings.Default.Save();
                     }
 
                     connectwpl.Close();
+
+                    bt_end_service.Visible = true;
                 }
+
             }
             catch (Exception ex)
             {
@@ -156,42 +161,49 @@ namespace Diplom_arendacar.Forms
         {
             try
             {
-                end_detail_info frm_info = new end_detail_info();
-                frm_info.ShowDialog();
-                SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
-                SqlCommand cmd = new SqlCommand();
-                conn.Open();
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "End_Service_Detail";
-                cmd.Parameters.AddWithValue("@cost", Properties.Settings.Default.servise_cost);
-                cmd.Parameters.AddWithValue("@date_end", DateTime.Now);
-                cmd.Parameters.AddWithValue("@CodeService", Properties.Settings.Default.CodeService);             
-                cmd.Connection = conn;
-                cmd.ExecuteNonQuery();
-                conn.Close();
-
-                MessageBox.Show("Спасибо за вашу работу. \n Время конца работы сохраненно");
-
-
-                SqlConnection connect = new SqlConnection(Properties.Settings.Default.ConnectionString);
-                connect.Open();
-                SqlCommand cmdd = new SqlCommand($"SELECT DateEnd FROM[Service] WHERE UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value}", connect);
-                SqlDataReader reader = cmdd.ExecuteReader();
-                if (reader.HasRows)
+                if(panel3.Visible == false)
                 {
-                    bt_end_service.Visible = false;
+
                 }
                 else
                 {
-                    bt_end_service.Visible = true;
-                }
+                    end_detail_info frm_info = new end_detail_info();
+                    frm_info.ShowDialog();
+                    SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                    SqlCommand cmd = new SqlCommand();
+                    conn.Open();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "End_Service_Detail";
+                    cmd.Parameters.AddWithValue("@cost", Properties.Settings.Default.servise_cost);
+                    cmd.Parameters.AddWithValue("@date_end", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@CodeService", Properties.Settings.Default.CodeService);
+                    cmd.Connection = conn;
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
 
-                if(panel3.Visible == false)
-                {
-                    SqlConnection conn23 = new SqlConnection(Properties.Settings.Default.ConnectionString);
-                    conn23.Open();
-                    SqlCommand cmd23 = new SqlCommand($"UPDATE [Care] Set StatusCarID = {1}, UserID IS NULL WHERE CarID = {dgv_my_service.Rows[0].Cells[0].Value}", conn23);
-                    conn23.Close();
+                    MessageBox.Show("Спасибо за вашу работу. \n Время конца работы сохраненно");
+
+
+                    SqlConnection connect = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                    connect.Open();
+                    SqlCommand cmdd = new SqlCommand($"SELECT DateEnd FROM[Service] WHERE UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value}", connect);
+                    SqlDataReader reader = cmdd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        bt_end_service.Visible = false;
+                    }
+                    else
+                    {
+                        bt_end_service.Visible = true;
+                    }
+
+                    if (panel3.Visible == false)
+                    {
+                        SqlConnection conn23 = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                        conn23.Open();
+                        SqlCommand cmd23 = new SqlCommand($"UPDATE [Care] Set StatusCarID = {1}, UserID IS NULL WHERE CarID = {dgv_my_service.Rows[0].Cells[0].Value}", conn23);
+                        conn23.Close();
+                    }
                 }
             }
             catch (Exception ex)
@@ -356,6 +368,24 @@ namespace Diplom_arendacar.Forms
                 panel3.Visible = false;
                 panel2.Visible = false;
             }
+            SqlConnection co = new SqlConnection(Properties.Settings.Default.ConnectionString);
+            SqlCommand cm = new SqlCommand($"SELECT TOP 1 [DateEnd] FROM Service WHERE  UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value} AND Work = 'Детейлинг' ORDER BY DateStart DESC", co);
+            co.Open();
+            SqlDataReader rdr = cm.ExecuteReader();
+            if(rdr.HasRows)
+            {
+                rdr.Read();
+                if (rdr["DateEnd"].ToString() == "")
+                {
+                    bt_start_service.Visible = false;
+                    bt_end_service.Visible = true;
+                }
+            }
+            else
+            {
+                bt_start_service.Visible = true;
+            }
+
         }
 
         private void bt_start_to_Click(object sender, EventArgs e)
@@ -406,6 +436,7 @@ namespace Diplom_arendacar.Forms
                         Properties.Settings.Default.Save();
                     }
                     connectwpl.Close();
+                    bt_end_to.Visible = true;
                 }
             }
             catch (Exception ex)
@@ -474,6 +505,25 @@ namespace Diplom_arendacar.Forms
             catch(Exception ex)
             {
                 MessageBox.Show("Ошибка",ex.Message);
+            }
+        }
+
+        private void bt_Choose_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                SqlCommand cmd = new SqlCommand();
+                conn.Open();
+                cmd.CommandText = "Assigning_Car_Master";
+
+
+
+
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("ERORR", ex.Message);
             }
         }
     }
