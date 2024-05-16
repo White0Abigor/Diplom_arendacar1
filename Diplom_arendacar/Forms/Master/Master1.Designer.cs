@@ -284,7 +284,7 @@
             this.dgv_my_service.Name = "dgv_my_service";
             this.dgv_my_service.ReadOnly = true;
             this.dgv_my_service.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv_my_service.Size = new System.Drawing.Size(432, 384);
+            this.dgv_my_service.Size = new System.Drawing.Size(432, 55);
             this.dgv_my_service.TabIndex = 6;
             // 
             // panel3

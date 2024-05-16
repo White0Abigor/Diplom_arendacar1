@@ -188,6 +188,7 @@ namespace Diplom_arendacar.Forms
                 }
                 else
                 {
+                    panel2.Visible = false;
                     end_detail_info frm_info = new end_detail_info();
                     frm_info.ShowDialog();
                     SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
@@ -218,13 +219,7 @@ namespace Diplom_arendacar.Forms
                         bt_end_service.Visible = true;
                     }
 
-                    if (panel3.Visible == false)
-                    {
-                        SqlConnection conn23 = new SqlConnection(Properties.Settings.Default.ConnectionString);
-                        conn23.Open();
-                        SqlCommand cmd23 = new SqlCommand($"UPDATE [Care] Set StatusCarID = {1}, UserID IS NULL WHERE CarID = {dgv_my_service.Rows[0].Cells[0].Value}", conn23);
-                        conn23.Close();
-                    }
+
                 }
             }
             catch (Exception ex)
@@ -404,11 +399,40 @@ namespace Diplom_arendacar.Forms
                             bt_start_service.Visible = false;
                             bt_end_service.Visible = true;
                         }
+                        else
+                        {
+                            panel2.Visible = false;
+                        }
                     }
                     else
                     {
                         bt_start_service.Visible = true;
                     }
+                    co.Close();
+
+                    SqlConnection co1 = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                    SqlCommand cm1 = new SqlCommand($"SELECT TOP 1 [DateEnd] FROM Service WHERE  UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value} AND Work = 'Техническое обслуживание' ORDER BY DateStart DESC", co1);
+                    co1.Open();
+                    SqlDataReader r1 = cm1.ExecuteReader();
+                    if (r1.HasRows)
+                    {
+                        r1.Read();
+                        if (r1["DateEnd"].ToString() == "")
+                        {
+                            bt_start_to.Visible = false;
+                            bt_end_to.Visible = true;
+                            bt_order_detali.Visible = true;
+                        }
+                        else
+                        {
+                            panel2.Visible = false;
+                        }
+                    }
+                    else
+                    {
+                        bt_start_to.Visible = true;
+                    }
+                    co1.Close();
                 }
 
             }
@@ -424,15 +448,8 @@ namespace Diplom_arendacar.Forms
         private void bt_start_to_Click(object sender, EventArgs e)
         {
             try
-            {
-                bt_order_detali.Visible = true;
-                if (bt_start_service.Visible ==  false) 
-                {
-                    MessageBox.Show("Вы уже заняты работой");
-                }
-                else
-                {
-
+            {              
+                    bt_order_detali.Visible = true;
                     SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
                     SqlCommand cmd = new SqlCommand();
                     conn.Open();
@@ -450,7 +467,7 @@ namespace Diplom_arendacar.Forms
 
                     SqlConnection connect = new SqlConnection(Properties.Settings.Default.ConnectionString);
                     connect.Open();
-                    SqlCommand cmdd = new SqlCommand($"SELECT CodeService FROM [Service] WHERE UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value}", connect);
+                    SqlCommand cmdd = new SqlCommand($"SELECT TOP 1 CodeService FROM [Service] WHERE UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value} ORDER BY DateStart DESC", connect);
                     SqlDataReader reader = cmdd.ExecuteReader();
                     if (reader.Read())
                     {
@@ -470,7 +487,7 @@ namespace Diplom_arendacar.Forms
                     }
                     connectwpl.Close();
                     bt_end_to.Visible = true;
-                }
+                
             }
             catch (Exception ex)
             {
@@ -490,50 +507,99 @@ namespace Diplom_arendacar.Forms
         {
             try
             {
-                if(checkBox1.Checked == false || checkBox2.Checked == false || checkBox3.Checked == false|| checkBox4.Checked == false)
+                if (panel2.Visible == false)
                 {
-                    MessageBox.Show("Вы не выполнили минимальные тербовния по работе!");
-                }
-                else
-                {
-                    end_detail_info frm_info = new end_detail_info();
-                    frm_info.ShowDialog();
-                    SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
-                    SqlCommand cmd = new SqlCommand();
-                    conn.Open();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "End_Service_TO";
-                    cmd.Parameters.AddWithValue("@cost", Properties.Settings.Default.servise_cost);
-                    cmd.Parameters.AddWithValue("@date_end", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@CodeService", Properties.Settings.Default.CodeService);
-                    cmd.Connection = conn;
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
-
-                    MessageBox.Show("Спасибо за вашу работу. \n Время конца работы сохраненно");
-
-
-                    SqlConnection connect = new SqlConnection(Properties.Settings.Default.ConnectionString);
-                    connect.Open();
-                    SqlCommand cmdd = new SqlCommand($"SELECT DateEnd FROM[Service] WHERE UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value}", connect);
-                    SqlDataReader reader = cmdd.ExecuteReader();
-                    if (reader.HasRows)
+                    if (checkBox1.Checked == false || checkBox2.Checked == false || checkBox3.Checked == false || checkBox4.Checked == false)
                     {
-                        bt_end_service.Visible = false;
+                        MessageBox.Show("Вы не выполнили минимальные тербовния по работе!");
                     }
                     else
                     {
-                        bt_end_service.Visible = true;
-                    }
+                        end_detail_info frm_info = new end_detail_info();
+                        frm_info.ShowDialog();
+                        SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                        SqlCommand cmd = new SqlCommand();
+                        conn.Open();
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandText = "End_Service_TO";
+                        cmd.Parameters.AddWithValue("@cost", Properties.Settings.Default.servise_cost);
+                        cmd.Parameters.AddWithValue("@date_end", DateTime.Now);
+                        MessageBox.Show(Properties.Settings.Default.CodeService);
+                        cmd.Parameters.AddWithValue("@CodeService", Properties.Settings.Default.CodeService);
+                        cmd.Connection = conn;
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
 
-                    if (panel3.Visible == false)
-                    {
-                        SqlConnection conn23 = new SqlConnection(Properties.Settings.Default.ConnectionString);
-                        conn23.Open();
-                        SqlCommand cmd23 = new SqlCommand($"UPDATE [Care] Set StatusCarID = {1}, UserID IS NULL WHERE CarID = {dgv_my_service.Rows[0].Cells[0].Value}", conn23);
-                        conn23.Close();
+                        SqlConnection connect = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                        connect.Open();
+                        SqlCommand cmdd = new SqlCommand($"SELECT DateEnd FROM[Service] WHERE UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value}", connect);
+                        SqlDataReader reader = cmdd.ExecuteReader();
+                        if (reader.HasRows)
+                        {
+                            bt_end_service.Visible = false;
+                        }
+                        else
+                        {
+                            bt_end_service.Visible = true;
+                        }
+
+                        SqlConnection conn45 = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                        SqlCommand cmd45 = new SqlCommand();
+                        conn45.Open();
+                        cmd45.CommandType = CommandType.StoredProcedure;
+                        cmd45.CommandText = "Removing_machine";
+                        cmd45.Parameters.AddWithValue("@car_id", Convert.ToInt32(dgv_my_service.Rows[0].Cells[0].Value));
+                        cmd45.Connection = conn45;
+                        cmd45.ExecuteNonQuery();
+                        conn45.Close();
+                        MessageBox.Show("Спасибо за вашу работу. \n Время конца работы сохраненно. \n Все работы на данном автомобиле закончены.\n Можете брать другое авто в работу!");
+
+                        panel3.Visible = false;
+                        List_My_Services();
+
                     }
                 }
+                else
+                {
+                    if (checkBox1.Checked == false || checkBox2.Checked == false || checkBox3.Checked == false || checkBox4.Checked == false)
+                    {
+                        MessageBox.Show("Вы не выполнили минимальные тербовния по работе!");
+                    }
+                    else
+                    {
+                        end_detail_info frm_info = new end_detail_info();
+                        frm_info.ShowDialog();
+                        SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                        SqlCommand cmd = new SqlCommand();
+                        conn.Open();
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandText = "End_Service_TO";
+                        cmd.Parameters.AddWithValue("@cost", Properties.Settings.Default.servise_cost);
+                        cmd.Parameters.AddWithValue("@date_end", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@CodeService", Properties.Settings.Default.CodeService);
+                        cmd.Connection = conn;
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+
+                        MessageBox.Show("Спасибо за вашу работу. \n Время конца работы сохраненно");
+
+
+                        SqlConnection connect = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                        connect.Open();
+                        SqlCommand cmdd = new SqlCommand($"SELECT DateEnd FROM[Service] WHERE UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value}", connect);
+                        SqlDataReader reader = cmdd.ExecuteReader();
+                        if (reader.HasRows)
+                        {
+                            bt_end_service.Visible = false;
+                        }
+                        else
+                        {
+                            bt_end_service.Visible = true;
+                        }
+
+                    }
+                }
+                
             }
             catch(Exception ex)
             {

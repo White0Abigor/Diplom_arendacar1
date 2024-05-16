@@ -158,6 +158,7 @@ namespace Diplom_arendacar.Forms.Master
                     }
                 }
                 PDF_Contract();
+                this.Close();
             }
         }
 

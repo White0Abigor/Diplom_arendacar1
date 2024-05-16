@@ -107,12 +107,6 @@
     <Compile Include="Forms\Master\BDetali.Designer.cs">
       <DependentUpon>BDetali.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Master\CountDetali.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Master\CountDetali.Designer.cs">
-      <DependentUpon>CountDetali.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Meneger\AcceptanceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -208,9 +202,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Master\BDetali.resx">
       <DependentUpon>BDetali.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Master\CountDetali.resx">
-      <DependentUpon>CountDetali.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Meneger\AcceptanceForm.resx">
       <DependentUpon>AcceptanceForm.cs</DependentUpon>

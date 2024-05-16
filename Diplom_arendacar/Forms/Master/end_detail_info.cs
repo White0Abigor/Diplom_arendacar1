@@ -36,8 +36,16 @@ namespace Diplom_arendacar.Forms
 
         private void bt_end_deteling_Click(object sender, EventArgs e)
         {
-           Properties.Settings.Default.servise_cost = Convert.ToInt32(tb_detail_cost.Text);
-            this.Close();
+            if(tb_detail_cost.Text == "")
+            {
+                MessageBox.Show("Вы не указали цену!");
+            }
+            else
+            {
+                Properties.Settings.Default.servise_cost = Convert.ToInt32(tb_detail_cost.Text);
+                this.Close();
+            }
+
         }
 
         private void tb_detail_cost_KeyPress(object sender, KeyPressEventArgs e)
