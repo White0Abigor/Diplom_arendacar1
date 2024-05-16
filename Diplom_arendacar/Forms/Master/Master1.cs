@@ -163,7 +163,14 @@ namespace Diplom_arendacar.Forms
             {
                 if(panel3.Visible == false)
                 {
-
+                    SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                    SqlCommand cmd = new SqlCommand();
+                    conn.Open();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "Removing_machine";
+                    cmd.Parameters.AddWithValue("@care_id", Convert.ToInt32(dgv_my_service.Rows[0].Cells[0].Value));
+                    cmd.Connection = conn;
+                    conn.Close();
                 }
                 else
                 {
