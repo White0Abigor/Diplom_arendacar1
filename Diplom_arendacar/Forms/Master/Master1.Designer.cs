@@ -44,8 +44,6 @@
             this.bt_Choose = new System.Windows.Forms.Button();
             this.dgw_all_services = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.button1 = new System.Windows.Forms.Button();
-            this.bt_registration = new System.Windows.Forms.Button();
             this.dgv_my_service = new System.Windows.Forms.DataGridView();
             this.panel3 = new System.Windows.Forms.Panel();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
@@ -263,8 +261,6 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.button1);
-            this.tabPage2.Controls.Add(this.bt_registration);
             this.tabPage2.Controls.Add(this.dgv_my_service);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -273,40 +269,6 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Мои заявки";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button1.BackColor = System.Drawing.Color.Crimson;
-            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Crimson;
-            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.ForeColor = System.Drawing.SystemColors.Control;
-            this.button1.Location = new System.Drawing.Point(318, 393);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(111, 30);
-            this.button1.TabIndex = 82;
-            this.button1.Text = "Активные";
-            this.button1.UseVisualStyleBackColor = false;
-            // 
-            // bt_registration
-            // 
-            this.bt_registration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bt_registration.BackColor = System.Drawing.Color.Crimson;
-            this.bt_registration.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.bt_registration.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Crimson;
-            this.bt_registration.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.bt_registration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bt_registration.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.bt_registration.ForeColor = System.Drawing.SystemColors.Control;
-            this.bt_registration.Location = new System.Drawing.Point(6, 393);
-            this.bt_registration.Name = "bt_registration";
-            this.bt_registration.Size = new System.Drawing.Size(128, 30);
-            this.bt_registration.TabIndex = 81;
-            this.bt_registration.Text = "История";
-            this.bt_registration.UseVisualStyleBackColor = false;
             // 
             // dgv_my_service
             // 
@@ -629,8 +591,6 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.DataGridView dgw_all_services;
         private System.Windows.Forms.DataGridView dgv_my_service;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button bt_registration;
         private System.Windows.Forms.Button bt_Choose;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;

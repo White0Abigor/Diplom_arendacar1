@@ -103,12 +103,7 @@ namespace Diplom_arendacar.Forms
 
             try
             {
-                if (bt_start_to.Visible == false)
-                {
-                    MessageBox.Show("Вы уже заняты работой");
-                }
-                else
-                {
+
                     SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
                     SqlCommand cmd = new SqlCommand();
                     conn.Open();
@@ -148,7 +143,7 @@ namespace Diplom_arendacar.Forms
                     connectwpl.Close();
 
                     bt_end_service.Visible = true;
-                }
+                
 
             }
             catch (Exception ex)
@@ -163,14 +158,33 @@ namespace Diplom_arendacar.Forms
             {
                 if(panel3.Visible == false)
                 {
+                    end_detail_info frm_info = new end_detail_info();
+                    frm_info.ShowDialog();
                     SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
                     SqlCommand cmd = new SqlCommand();
                     conn.Open();
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "Removing_machine";
-                    cmd.Parameters.AddWithValue("@care_id", Convert.ToInt32(dgv_my_service.Rows[0].Cells[0].Value));
+                    cmd.CommandText = "End_Service_Detail";
+                    cmd.Parameters.AddWithValue("@cost", Properties.Settings.Default.servise_cost);
+                    cmd.Parameters.AddWithValue("@date_end", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@CodeService", Properties.Settings.Default.CodeService);
                     cmd.Connection = conn;
+                    cmd.ExecuteNonQuery();
                     conn.Close();
+
+                    SqlConnection conn45 = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                    SqlCommand cmd45 = new SqlCommand();
+                    conn45.Open();
+                    cmd45.CommandType = CommandType.StoredProcedure;
+                    cmd45.CommandText = "Removing_machine";
+                    cmd45.Parameters.AddWithValue("@car_id", Convert.ToInt32(dgv_my_service.Rows[0].Cells[0].Value));
+                    cmd45.Connection = conn45;
+                    cmd45.ExecuteNonQuery();
+                    conn45.Close();
+                    MessageBox.Show("Спасибо за вашу работу. \n Время конца работы сохраненно. \n Все работы на данном автомобиле закончены.\n Можете брать другое авто в работу!");
+
+                    panel2.Visible = false;
+                    List_My_Services();
                 }
                 else
                 {
@@ -326,47 +340,75 @@ namespace Diplom_arendacar.Forms
 
         private void tabControl1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
+            List_My_Services();
+            List_All_Services();
             if (tabControl1.SelectedIndex == 1)
             {
 
-                panel2.Visible = true;
-                int mileage = Convert.ToInt32(dgv_my_service.CurrentRow.Cells[1].Value);
-                int to = Convert.ToInt32(dgv_my_service.CurrentRow.Cells[2].Value);
-                if (to == 0 && mileage >= 10000)
+               
+                if(dgv_my_service.RowCount == 0)
                 {
-                    panel3.Visible = true;
-                }
-                else if (to == 1 && mileage >= 20000)
-                {
-                    panel3.Visible = true;
-                }
-                else if (to == 2 && mileage >= 30000)
-                {
-                    panel3.Visible = true;
-                }
-                else if (to == 3 && mileage >= 40000)
-                {
-                    panel3.Visible = true;
-                }
-                else if (to == 4 && mileage >= 50000)
-                {
-                    panel3.Visible = true;
-                }
-                else if (to == 5 && mileage >= 60000)
-                {
-                    panel3.Visible = true;
-                }
-                else if (to == 6 && mileage >= 70000)
-                {
-                    panel3.Visible = true;
-                }
-                else if (to == 7 && mileage >= 80000)
-                {
-                    panel3.Visible = true;
+
                 }
                 else
                 {
-                    panel3.Visible = false;
+                    panel2.Visible = true;
+                    int mileage = Convert.ToInt32(dgv_my_service.CurrentRow.Cells[1].Value);
+                    int to = Convert.ToInt32(dgv_my_service.CurrentRow.Cells[2].Value);
+                    if (to == 0 && mileage >= 10000)
+                    {
+                        panel3.Visible = true;
+                    }
+                    else if (to == 1 && mileage >= 20000)
+                    {
+                        panel3.Visible = true;
+                    }
+                    else if (to == 2 && mileage >= 30000)
+                    {
+                        panel3.Visible = true;
+                    }
+                    else if (to == 3 && mileage >= 40000)
+                    {
+                        panel3.Visible = true;
+                    }
+                    else if (to == 4 && mileage >= 50000)
+                    {
+                        panel3.Visible = true;
+                    }
+                    else if (to == 5 && mileage >= 60000)
+                    {
+                        panel3.Visible = true;
+                    }
+                    else if (to == 6 && mileage >= 70000)
+                    {
+                        panel3.Visible = true;
+                    }
+                    else if (to == 7 && mileage >= 80000)
+                    {
+                        panel3.Visible = true;
+                    }
+                    else
+                    {
+                        panel3.Visible = false;
+                    }
+
+                    SqlConnection co = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                    SqlCommand cm = new SqlCommand($"SELECT TOP 1 [DateEnd] FROM Service WHERE  UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value} AND Work = 'Детейлинг' ORDER BY DateStart DESC", co);
+                    co.Open();
+                    SqlDataReader rdr = cm.ExecuteReader();
+                    if (rdr.HasRows)
+                    {
+                        rdr.Read();
+                        if (rdr["DateEnd"].ToString() == "")
+                        {
+                            bt_start_service.Visible = false;
+                            bt_end_service.Visible = true;
+                        }
+                    }
+                    else
+                    {
+                        bt_start_service.Visible = true;
+                    }
                 }
 
             }
@@ -375,23 +417,7 @@ namespace Diplom_arendacar.Forms
                 panel3.Visible = false;
                 panel2.Visible = false;
             }
-            SqlConnection co = new SqlConnection(Properties.Settings.Default.ConnectionString);
-            SqlCommand cm = new SqlCommand($"SELECT TOP 1 [DateEnd] FROM Service WHERE  UserID = {Properties.Settings.Default.user_id} AND CareID = {dgv_my_service.Rows[0].Cells[0].Value} AND Work = 'Детейлинг' ORDER BY DateStart DESC", co);
-            co.Open();
-            SqlDataReader rdr = cm.ExecuteReader();
-            if(rdr.HasRows)
-            {
-                rdr.Read();
-                if (rdr["DateEnd"].ToString() == "")
-                {
-                    bt_start_service.Visible = false;
-                    bt_end_service.Visible = true;
-                }
-            }
-            else
-            {
-                bt_start_service.Visible = true;
-            }
+
 
         }
 
@@ -541,6 +567,8 @@ namespace Diplom_arendacar.Forms
                     conn.Close();
 
                     MessageBox.Show("Машина успешно закреплена за вами");
+
+                    List_All_Services();
                 }
 
             }
@@ -549,5 +577,7 @@ namespace Diplom_arendacar.Forms
                 MessageBox.Show("ERORR", ex.Message);
             }
         }
+
+
     }
 }
