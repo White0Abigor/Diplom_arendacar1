@@ -512,13 +512,29 @@ namespace Diplom_arendacar.Forms
         {
             try
             {
-                SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
-                SqlCommand cmd = new SqlCommand();
-                conn.Open();
-                cmd.CommandText = "Assigning_Car_Master";
+                SqlConnection c = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                c.Open();
+                SqlCommand cc = new SqlCommand($"SELECT UserID FROM Care WHERE UserID = {Properties.Settings.Default.user_id}", c);
+                SqlDataReader r = cc.ExecuteReader();
+                if (r.HasRows)
+                {
+                    MessageBox.Show("За вами уже закреплена машина");
+                }
+                else
+                {
+                    SqlConnection conn = new SqlConnection(Properties.Settings.Default.ConnectionString);
+                    SqlCommand cmd = new SqlCommand();
+                    conn.Open();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "Assigning_Car_Master";
+                    cmd.Parameters.AddWithValue("@car_id", Convert.ToInt32(dgw_all_services.CurrentRow.Cells[0].Value));
+                    cmd.Parameters.AddWithValue("@user_id", Properties.Settings.Default.user_id);
+                    cmd.Connection = conn;
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
 
-
-
+                    MessageBox.Show("Машина успешно закреплена за вами");
+                }
 
             }
             catch(Exception ex)
